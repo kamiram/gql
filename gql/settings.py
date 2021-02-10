@@ -6,7 +6,7 @@ SECRET_KEY = '4rf3x*=8=-*#3t*_ls2#njs0%z$2srdfriy#po9i_pyo&e*p*r'
 
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 AUTH_USER_MODEL = 'users.ApiUser'
 
