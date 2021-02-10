@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import ApiUser
 
-# Register your models here.
+
+class ApiUserAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(ApiUser, ApiUserAdmin)

@@ -1,34 +1,27 @@
 import graphene
 from django.contrib.auth import get_user_model
+
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
 from graphene_django.types import DjangoObjectType
 from posts.models import Post
+from graphene_django_optimizer import OptimizedDjangoObjectType
 
 User = get_user_model()
 
 
-class UserType(DjangoObjectType):
+class UserType(OptimizedDjangoObjectType):
+    name = graphene.String()
+    resolve_name = lambda root, info: root.username
+
+    data_reg = graphene.DateTime()
+    resolve_data_reg = lambda root, info: root.date_joined
+
+    Enable = graphene.Boolean()
+    resolve_Enable = lambda root, info: root.is_active
+
     class Meta:
         model = User
-
-        # username = graphene.Field()
-        # dataReg = graphene.DateTime()
-        # enable = graphene.Boolean()
-        fields = [
-            'id', 'bio', 'social', 'email', 'posts', 'is_active',
-            'username', 'date_joined',
-        ]
-
-        def resolve_name(self, info):
-            return 'test'
-
-        def resolve_enable(self):
-            return self.is_active
-
-        def resolve_dataReg(self):
-            return self.date_joined
-
 
 class PostType(DjangoObjectType):
     class Meta:
@@ -53,7 +46,8 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
     def resolve_get_user(self, info, **kwargs):
         id = kwargs.get('id')
         if id is not None:
-            return User.objects.get(pk=id)
+            user = User.objects.get(pk=id)
+            return user
         return None
 
     def resolve_get_post(self, info, **kwargs):
@@ -125,4 +119,4 @@ class Mutation(AuthMutation, graphene.ObjectType):
     update_post = UpdatePost.Field()
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = graphene.Schema(query=Query, mutation=Mutation, )
