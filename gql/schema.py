@@ -17,8 +17,8 @@ class UserType(OptimizedDjangoObjectType):
     data_reg = graphene.DateTime()
     resolve_data_reg = lambda root, info: root.date_joined
 
-    Enable = graphene.Boolean()
-    resolve_Enable = lambda root, info: root.is_active
+    enable = graphene.Boolean()
+    resolve_enable = lambda root, info: root.is_active
 
     class Meta:
         model = User
