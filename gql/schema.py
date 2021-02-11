@@ -63,15 +63,6 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
 
     def resolve_get_posts(self, info, **kwargs):
         posts = Post.objects
-        limit = kwargs.get('limit')
-        offset = kwargs.get('offset')
-
-        if limit and offset:
-            posts = posts[offset:limit + offset]
-        if offset:
-            posts = posts[offset:]
-        if limit:
-            posts = posts[:limit + offset]
         return posts.all()
 
 
