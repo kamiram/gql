@@ -77,7 +77,7 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
         elif offset:
             posts_result = posts_result[offset:]
         elif limit:
-            posts_result = posts_result[:limit + offset]
+            posts_result = posts_result[:limit]
         return posts_result
 
 
