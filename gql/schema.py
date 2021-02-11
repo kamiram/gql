@@ -23,10 +23,15 @@ class UserType(OptimizedDjangoObjectType):
     class Meta:
         model = User
 
+
 class PostType(DjangoObjectType):
     class Meta:
         model = Post
-        fields = '__all__'
+        filter_fields = {
+            'owner': ['exact', 'in'],
+            'title': ['icontains', 'istartwith'],
+            'descr': ['icontains', 'istartwith'],
+        }
 
 
 class AuthMutation(graphene.ObjectType):
@@ -58,15 +63,15 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
 
     def resolve_get_posts(self, info, **kwargs):
         posts = Post.objects
-        title = kwargs.get('title')
-        descr = kwargs.get('descr')
-        owner = kwargs.get('owner')
-        if title:
-            posts = posts.filter(title__icontains=title)
-        if descr:
-            posts = posts.filter(descr__icontains=descr)
-        if owner:
-            posts = posts.filter(owner_id=owner)
+        limit = kwargs.get('limit')
+        offset = kwargs.get('offset')
+
+        if limit and offset:
+            posts = posts[offset:limit + offset]
+        if offset:
+            posts = posts[offset:]
+        if limit:
+            posts = posts[:limit + offset]
         return posts.all()
 
 
