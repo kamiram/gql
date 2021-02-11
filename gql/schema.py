@@ -63,7 +63,7 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
             return Post.objects.get(pk=id)
         return None
 
-    def resolve_get_posts(self, info, title=None, descr=Nine, owner=None, limit=None, offset=None, **kwargs):
+    def resolve_get_posts(self, info, title=None, descr=None, owner=None, limit=None, offset=None, **kwargs):
         posts = Post.objects
         if title:
             posts = posts.filter(title__icontains=title)
