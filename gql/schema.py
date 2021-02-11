@@ -71,13 +71,14 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
             posts = posts.filter(descr__icontains=descr)
         if owner:
             posts = posts.filter(owner_id=owner)
+        posts_result = posts.all()
         if limit and offset:
-            posts = posts[offset:limit + offset]
-        if offset:
-            posts = posts[offset:]
-        if limit:
-            posts = posts[:limit + offset]
-        return posts.all()
+            posts_result = posts_result[offset:limit + offset]
+        elif offset:
+            posts_result = posts_result[offset:]
+        elif limit:
+            posts_result = posts_result[:limit + offset]
+        return posts_result
 
 
 class PostInput(graphene.InputObjectType):
