@@ -44,6 +44,8 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
     get_posts = graphene.List(
         PostType,
         owner=graphene.Int(),
+        limit=graphene.Int(),
+        offset=graphene.Int(),
         title=graphene.String(),
         descr=graphene.String(),
     )
@@ -61,8 +63,20 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
             return Post.objects.get(pk=id)
         return None
 
-    def resolve_get_posts(self, info, **kwargs):
+    def resolve_get_posts(self, info, title=None, descr=Nine, owner=None, limit=None, offset=None, **kwargs):
         posts = Post.objects
+        if title:
+            posts = posts.filter(title__icontains=title)
+        if descr:
+            posts = posts.filter(descr__icontains=descr)
+        if owner:
+            posts = posts.filter(owner_id=owner)
+        if limit and offset:
+            posts = posts[offset:limit + offset]
+        if offset:
+            posts = posts[offset:]
+        if limit:
+            posts = posts[:limit + offset]
         return posts.all()
 
 
